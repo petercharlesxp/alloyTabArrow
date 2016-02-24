@@ -1,4 +1,29 @@
+".container": {
+  layout: "vertical",
+  width : '90%'
+},
 
-".container" : {
-  
+"#imageContainer" : {
+  width : '300dp',
+  height :'300dp',
+},
+"#image" : {
+  top : '10dp',
+  left : '10dp',
+  width : '280dp',
+  height : '280dp',
+},
+
+"#buttonContainer" : {
+  layout : 'horizontal',
+  width : Ti.UI.FILL,
+  height : '42dp'
+},
+"#commentButton" : {
+  width : '50%',
+  height : '32dp'
+},
+"#shareButton" : {
+  width : '50%',
+  height : '32dp'
 }
