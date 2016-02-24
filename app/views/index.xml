@@ -1,5 +1,7 @@
 <Alloy>
-	<Window class="container">
-		<Label id="label" onClick="doClick">Hello, World</Label>
-	</Window>
+	<TabGroup>
+		<Require id="feedController" src="feed"></Require>
+		<Require id="friendsController" src="friends"></Require>
+		<Require id="settingsController" src="settings"></Require>
+	</TabGroup>
 </Alloy>

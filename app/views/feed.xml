@@ -1,0 +1,7 @@
+<Alloy>
+   <Tab title="Feed">
+      <Window title="Feed">
+          <Label>This is a Feed tab</Label>
+      </Window>
+   </Tab>
+</Alloy>
