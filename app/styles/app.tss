@@ -24,3 +24,38 @@ overrode the settings with other TSS, XML, or JS settings:
 }
 
 */
+
+".container": {
+	backgroundColor:"white"
+}
+
+"Label": {
+	width: Ti.UI.SIZE,
+	height: Ti.UI.SIZE,
+	color: "#000"
+}
+
+"#label": {
+	font: {
+		fontSize: 12
+	}
+}
+
+'Label[platform=android]': {
+    color: '#000' // Android default to black 
+},
+'Window[platform=android]': {
+    modal: false // android windows all heavyweight
+},
+'TextField': {
+    borderStyle: Ti.UI.INPUT_BORDERSTYLE_ROUNDED, // default style
+    borderColor : 'black'
+},
+'TextField[platform=android]': {
+    borderRadius: 6, // common default style
+    borderColor : 'black',
+    borderWidth : 1
+},
+'ImageView[platform=ios]': {
+    preventDefaultImage: true // never image while loading remote
+}
