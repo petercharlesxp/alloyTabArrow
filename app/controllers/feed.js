@@ -106,3 +106,42 @@ function processImage(_mediaObject, _callback) {
 	}); 
 
 }
+
+$.initialize = function(){
+    loadPhotos();
+};
+
+  // Add the above code for the function initialize to feed.js
+
+function loadPhotos() {
+    var rows = [];
+
+    // creates or gets the global instance of photo collection
+    var photos = Alloy.Collections.photo || Alloy.Collections.instance("Photo");
+
+    // be sure we ignore profile photos;
+    var where = {
+        title : {
+            "$exists" : true
+        }
+    };
+
+    photos.fetch({
+        data : {
+            order : '-created_at',
+            where : where
+        },
+        success : function(model, response) {
+            photos.each(function(photo) {
+                var photoRow = Alloy.createController("feedRow", photo);
+                rows.push(photoRow.getView());
+            });
+            $.feedTable.data = rows;
+            Ti.API.info(JSON.stringify($.feedTable.data));
+        },
+        error : function(error) {
+            alert('Error loading Feed ' + e.message);
+            Ti.API.error(JSON.stringify(error));
+        }
+    });
+}
