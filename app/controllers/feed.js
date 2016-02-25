@@ -13,12 +13,15 @@ $.cameraButtonClicked = function(_event) {
 $.cameraButtonClicked = function(_event) {
    alert("user clicked camera button");
 
-   var photoSource = Titanium.Media.getIsCameraSupported() ? 
-       Titanium.Media.showCamera : Titanium.Media.openPhotoGallery;
+//   var photoSource = Titanium.Media.getIsCameraSupported() ? 
+//       Titanium.Media.showCamera : Titanium.Media.openPhotoGallery;
 
-photoSource ({
+//photoSource ({ 
+//	note: the above comment codes of the book not working, should changed to Titanium.Media.showCamera
+Titanium.Media.showCamera({
+	
       success : function(event) {
-          processImage(event.media, function(_photoResp){
+          processImage(event.media, function(photoResp){
               //photoObject = _photoResp;
                             
 		      // create the row

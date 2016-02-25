@@ -21,9 +21,9 @@
 },
 "#commentButton" : {
   width : '50%',
-  height : '32dp'
+  height : '42dp'
 },
 "#shareButton" : {
   width : '50%',
-  height : '32dp'
+  height : '42dp'
 }

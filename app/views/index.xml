@@ -1,7 +1,9 @@
+<!-- index.xml -->
 <Alloy>
-	<TabGroup>
-		<Require id="feedController" src="feed"></Require>
-		<Require id="friendsController" src="friends"></Require>
-		<Require id="settingsController" src="settings"></Require>
-	</TabGroup>
+   <TabGroup id="tabGroup" onOpen="doOpen">
+      <!-- Tabs included via <Require> tag -->
+      <Require id="feedController" src="feed"/>
+      <Require id="friendsController" src="friends"/>
+      <Require id="settingsController" src="settings"/>
+   </TabGroup>
 </Alloy>
