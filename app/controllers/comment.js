@@ -5,7 +5,7 @@
 var parameters = arguments[0] || {};
 var currentPhoto = parameters.photo || {};
 var parentController = parameters.parentController || {};
-
+Ti.API.info("currentPhoto id: " + currentPhoto.id);
 var comments = Alloy.Collections.instance("comment");
 
 function loadComments(_photo_id) {
@@ -26,6 +26,7 @@ function loadComments(_photo_id) {
 			});
 			// set the table rows
 			$.commentTable.data = rows;
+			Ti.API.info(JSON.stringify(params));
 		},
 		error : function(error) {
 			alert('Error loading comments ' + e.message);

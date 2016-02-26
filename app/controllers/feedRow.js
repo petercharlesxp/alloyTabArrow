@@ -6,6 +6,7 @@ var model = arguments[0] || {};
 
 $.image.image = model.attributes.urls.preview;
 $.titleLabel.text = model.attributes.title || '';
-
+Ti.API.info("Inside feedRow: " + JSON.stringify(model));
 // save the model id for use later in app
-$.row_id = model.id || '';
+$.row.row_id = model.id || '';
+Ti.API.info("model.id: " + model.id);

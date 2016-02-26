@@ -18,7 +18,7 @@ function processTableClicks(_event) {
 function handleCommentButtonClicked(_event) {
    var collection = Alloy.Collections.instance("Photo");
    var model = collection.get(_event.row.row_id);
-
+   Ti.API.info(JSON.stringify("_event.row.row_id: " + _event.row.row_id));
    var controller = Alloy.createController("comment", {
       photo : model,
       parentController : $
@@ -160,6 +160,7 @@ function loadPhotos() {
         success : function(model, response) {
             photos.each(function(photo) {
                 var photoRow = Alloy.createController("feedRow", photo);
+                Ti.API.info("feedRow: " + JSON.stringify(photo));
                 rows.push(photoRow.getView());
             });
             $.feedTable.data = rows;
