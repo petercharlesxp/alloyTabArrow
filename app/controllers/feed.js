@@ -5,6 +5,32 @@ OS_IOS && $.cameraButton.addEventListener("click",function(_event){
     $.cameraButtonClicked(_event);
 });
 
+$.feedTable.addEventListener("click", processTableClicks);
+
+function processTableClicks(_event) {
+   if (_event.source.id === "commentButton") {
+       handleCommentButtonClicked(_event);
+   } else if (_event.source.id === "shareButton") {
+      alert('Will do this later!!');
+   }
+}
+
+function handleCommentButtonClicked(_event) {
+   var collection = Alloy.Collections.instance("Photo");
+   var model = collection.get(_event.row.row_id);
+
+   var controller = Alloy.createController("comment", {
+      photo : model,
+      parentController : $
+   });
+
+   // initialize the data in the view, load content
+   controller.initialize();
+
+   // open the view
+   Alloy.Globals.openCurrentTabWindow(controller.getView());
+
+}
 // handlers
 $.cameraButtonClicked = function(_event) {
   alert("user clicked camera button");
