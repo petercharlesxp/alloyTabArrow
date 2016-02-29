@@ -1,50 +1,60 @@
 // Arguments passed into this controller can be accessed off of the `$.args` object directly or:
 var args = $.args;
 
-OS_IOS && $.cameraButton.addEventListener("click",function(_event){
-    $.cameraButtonClicked(_event);
+OS_IOS && $.cameraButton.addEventListener("click", function(_event) {
+	$.cameraButtonClicked(_event);
 });
 
 $.feedTable.addEventListener("click", processTableClicks);
 
 function processTableClicks(_event) {
-   if (_event.source.id === "commentButton") {
-       handleCommentButtonClicked(_event);
-   } else if (_event.source.id === "shareButton") {
-      alert('Will do this later!!');
-   }
+	if (_event.source.id === "commentButton") {
+		handleCommentButtonClicked(_event);
+	} else if (_event.source.id === "shareButton") {
+		alert('Will do this later!!');
+	}
 }
 
 function handleCommentButtonClicked(_event) {
-   var collection = Alloy.Collections.instance("Photo");
-   var model = collection.get(_event.row.row_id);
-   Ti.API.info(JSON.stringify("_event.row.row_id: " + _event.row.row_id));
-   var controller = Alloy.createController("comment", {
-      photo : model,
-      parentController : $
-   });
+	var collection = Alloy.Collections.instance("Photo");
+	var model = collection.get(_event.row.row_id);
+	Ti.API.info(JSON.stringify("_event.row.row_id: " + _event.row.row_id));
+	var controller = Alloy.createController("comment", {
+		photo : model,
+		parentController : $
+	});
 
-   // initialize the data in the view, load content
-   controller.initialize();
+	// initialize the data in the view, load content
+	controller.initialize();
 
-   // open the view
-   Alloy.Globals.openCurrentTabWindow(controller.getView());
+	// open the view
+	Alloy.Globals.openCurrentTabWindow(controller.getView());
 
 }
+
 // handlers
-$.cameraButtonClicked = function(_event) {
-  alert("user clicked camera button");
-};
+//$.cameraButtonClicked = function(_event) {
+//  alert("user clicked camera button");
+//};
 
 $.cameraButtonClicked = function(_event) {
-   alert("user clicked camera button");
+	alert("user clicked camera button");
 
-//   var photoSource = Titanium.Media.getIsCameraSupported() ? 
-//       Titanium.Media.showCamera : Titanium.Media.openPhotoGallery;
+	//   var photoSource = Titanium.Media.getIsCameraSupported() ?
+	//       Titanium.Media.showCamera : Titanium.Media.openPhotoGallery;
 
-//photoSource ({ 
-//	note: the above comment codes of the book not working, should changed to Titanium.Media.showCamera
-Titanium.Media.showCamera({	
+	//photoSource ({
+	//	note: the above comment codes of the book not working, should changed to Titanium.Media.showCamera
+
+	//Titanium.Media.showCamera({
+
+	if (!Ti.Media.isCameraSupported) {
+		photoSource = 'openPhotoGallery';
+	} else {
+		photoSource = 'showCamera';
+	}
+
+	Titanium.Media[photoSource]({
 
 		success : function(event) {
 			processImage(event.media, function(/*photoResp*/processResponse) {
@@ -69,38 +79,36 @@ Titanium.Media.showCamera({
 			});
 		},
 
-
-      cancel : function() {
-       // called when user cancels taking a picture
-      },
-      error : function(error) {
-       // display alert on error
-          if (error.code == Titanium.Media.NO_CAMERA) {
-             alert('Please run this test on device');
-          } else {
-             alert('Unexpected error: ' + error.code);
-          }
-       },
-       saveToPhotoGallery : false,
-       allowEditing : true,
-       // only allow for photos, no video
-       mediaTypes : [Ti.Media.MEDIA_TYPE_PHOTO]
-   });
+		cancel : function() {
+			// called when user cancels taking a picture
+		},
+		error : function(error) {
+			// display alert on error
+			if (error.code == Titanium.Media.NO_CAMERA) {
+				alert('Please run this test on device');
+			} else {
+				alert('Unexpected error: ' + error.code);
+			}
+		},
+		saveToPhotoGallery : false,
+		allowEditing : true,
+		// only allow for photos, no video
+		mediaTypes : [Ti.Media.MEDIA_TYPE_PHOTO]
+	});
 };
 
-
 function processImage(_mediaObject, _callback) {
-  /*
-  // since there is no ACS integration yet, we will fake it
-  var photoObject = {
-    image : _mediaObject,
-    title : "Sample Photo " + new Date()
-  };
+	/*
+	 // since there is no ACS integration yet, we will fake it
+	 var photoObject = {
+	 image : _mediaObject,
+	 title : "Sample Photo " + new Date()
+	 };
 
-  // return the object to the caller
-  _callback(photoObject);
-  */
- 
+	 // return the object to the caller
+	 _callback(photoObject);
+	 */
+
 	var parameters = {
 		"photo" : _mediaObject,
 		"title" : "Sample Photo " + new Date(),
@@ -108,7 +116,7 @@ function processImage(_mediaObject, _callback) {
 		"photo_sizes[iphone]" : "320x320#",
 		// We need this since we are showing the image immediately
 		"photo_sync_sizes[]" : "preview"
-	}; 
+	};
 
 	var photo = Alloy.createModel('Photo', parameters);
 
@@ -129,46 +137,46 @@ function processImage(_mediaObject, _callback) {
 				success : false
 			});
 		}
-	}); 
+	});
 
 }
 
-$.initialize = function(){
-    loadPhotos();
+$.initialize = function() {
+	loadPhotos();
 };
 
-  // Add the above code for the function initialize to feed.js
+// Add the above code for the function initialize to feed.js
 
 function loadPhotos() {
-    var rows = [];
+	var rows = [];
 
-    // creates or gets the global instance of photo collection
-    var photos = Alloy.Collections.photo || Alloy.Collections.instance("Photo");
+	// creates or gets the global instance of photo collection
+	var photos = Alloy.Collections.photo || Alloy.Collections.instance("Photo");
 
-    // be sure we ignore profile photos;
-    var where = {
-        title : {
-            "$exists" : true
-        }
-    };
+	// be sure we ignore profile photos;
+	var where = {
+		title : {
+			"$exists" : true
+		}
+	};
 
-    photos.fetch({
-        data : {
-            order : '-created_at',
-            where : where
-        },
-        success : function(model, response) {
-            photos.each(function(photo) {
-                var photoRow = Alloy.createController("feedRow", photo);
-                Ti.API.info("feedRow: " + JSON.stringify(photo));
-                rows.push(photoRow.getView());
-            });
-            $.feedTable.data = rows;
-            Ti.API.info(JSON.stringify($.feedTable.data));
-        },
-        error : function(error) {
-            alert('Error loading Feed ' + e.message);
-            Ti.API.error(JSON.stringify(error));
-        }
-    });
+	photos.fetch({
+		data : {
+			order : '-created_at',
+			where : where
+		},
+		success : function(model, response) {
+			photos.each(function(photo) {
+				var photoRow = Alloy.createController("feedRow", photo);
+				Ti.API.info("feedRow: " + JSON.stringify(photo));
+				rows.push(photoRow.getView());
+			});
+			$.feedTable.data = rows;
+			Ti.API.info(JSON.stringify($.feedTable.data));
+		},
+		error : function(error) {
+			alert('Error loading Feed ' + e.message);
+			Ti.API.error(JSON.stringify(error));
+		}
+	});
 }
