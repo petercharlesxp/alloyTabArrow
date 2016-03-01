@@ -40,6 +40,8 @@ function Sync(method, model, options) {
 		processACSPhotos(model, method, options);
 	} else if (object_name === "users") {
 		processACSUsers(model, method, options);
+	} else if (object_name === "reviews") {
+		processACSComments(model, method, options);
 	}
 }
 
@@ -135,18 +137,27 @@ function processACSComments(model, method, opts) {
 
 	case "read":
 		Cloud.Reviews.query((opts.data || {}), function(e) {
+			Ti.API.info("opts.data: " + JSON.stringify(opts.data || {}));//
 			if (e.success) {
+				Ti.API.info("e: " + JSON.stringify(e));//
 				model.meta = e.meta;
 				if (e.reviews.length === 1) {
 					opts.success && opts.success(e.reviews[0]);
+					//opts.success(e.reviews[0]); //
+					//Ti.API.info("opts.success,e.reviews.length === 1: " + JSON.stringify(opts.success)); //
+					//Ti.API.info("opts.success,e.reviews.length === 1: " + JSON.stringify(opts.success(e.reviews[0]))); //
 				} else {
-					opts.success && opts.success(e.reviews)
+					opts.success && opts.success(e.reviews);
+					//opts.success(e.reviews); //
+					Ti.API.info("opts.success,e.reviews.length !== 1: " + JSON.stringify(opts.success));//
+					Ti.API.info("opts.success,e.reviews.length !== 1: " + JSON.stringify(opts.success(e.reviews)));//
 				}
+				Ti.API.info("Reviews: " + JSON.stringify(e));//
 				model.trigger("fetch");
 				return;
 			} else {
 				Ti.API.error("Reviews.query " + e.message);
-				opts.error && opts.error(e.message || e);
+				opts.error && opts.error(e.message || e);				
 			}
 		});
 		break;

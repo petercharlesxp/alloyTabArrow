@@ -21,6 +21,7 @@ function loadComments(_photo_id) {
 		data : params,
 		success : function(model, response) {
 			comments.each(function(comment) {
+				Ti.API.info("comment in loadComents: " + JSON.stringify(comment)); //
 				var commentRow = Alloy.createController("commentRow", comment);
 				rows.push(commentRow.getView());
 			});
@@ -75,4 +76,56 @@ OS_IOS && $.newCommentButton.addEventListener("click", handleNewCommentButtonCli
 
 function handleNewCommentButtonClicked(_event) {
 	// FILLED OUT LATER IN CHAPTER
+	var navWin;
+	var inputController = Alloy.createController("commentInput", {
+		photo : currentPhoto,
+		parentController : $,
+		callback : function(_event) {
+			inputController.getView().close();
+			inputCallback(_event);
+			Ti.API.info("handleNewCommentButtonClicked: " + JSON.stringify(_event));
+		}
+	});
+
+	// open the window
+	inputController.getView().open();
+	//Ti.API.info("handleNewCommentButtonClicked: " + JSON.stringify(_event));
+}
+
+function inputCallback(_event) {
+	if (_event.success) {
+		addComment(_event.content);
+	} else {
+		alert("No Comment Added");
+	}
+}
+
+function addComment(_content) {
+    var comment = Alloy.createModel('Comment');
+    var params = {
+        photo_id : currentPhoto.id,
+        content : _content,
+        allow_duplicate : 1
+    };
+
+    comment.save(params, {
+        success : function(_model, _response) {
+            Ti.API.info('success: ' + _model.toJSON());
+            Ti.API.info("_model: " + JSON.stringify(_model));
+            var row = Alloy.createController("commentRow", _model);
+
+            // add the controller view, which is a row to the table
+            if ($.commentTable.getData().length === 0) {
+                $.commentTable.setData([]);
+                $.commentTable.appendRow(row.getView(), true);
+            } else {
+                $.commentTable.insertRowBefore(0,row.getView(),
+                                                             true);
+            }
+        },
+        error : function(e) {
+            Ti.API.error('error: ' + e.message);
+            alert('Error saving new comment ' + e.message);
+        }
+    });
 }
