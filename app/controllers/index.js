@@ -33,6 +33,9 @@ function doOpen() {
 //$.tabGroup.open();
 //$.index.open();
 
+
+
+/*
 // when we start up, create a user and log in
 var user = Alloy.createModel('User');
 
@@ -50,8 +53,15 @@ user.login("wileytigram_admin", "wileytigram_admin", function(_response) {
 		alert("Error Starting Application " + _response.error);
 		Ti.API.error('error logging in ' + _response.error);
 	}
-}); 
+});
+*/
 
 Alloy.Globals.openCurrentTabWindow = function(_window) {
-$.tabGroup.activeTab.open(_window);
-};
+	$.tabGroup.activeTab.open(_window);
+}; 
+
+var loginController = Alloy.createController("login", {
+	parentController : $,
+	reset : true
+});
+loginController.getView().open();

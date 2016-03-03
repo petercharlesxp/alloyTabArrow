@@ -1,0 +1,22 @@
+'#homeView' : {
+    visible : true,
+    /*top : '90dp',*/
+   top : '10dp',
+    layout: 'vertical',
+    /*backgroundColor : 'transparent'*/
+   backgroundColor : "white"
+},
+'#hvButtonContainer' : {
+    top:'20dp',
+    width:'250',
+    height:Ti.UI.SIZE,
+    layout: 'vertical'
+},
+'#welcomeText' :{
+    text : "Welcome Text Goes Here For the App",
+    textAlign: Ti.UI.TEXT_ALIGNMENT_CENTER,
+    font:{
+        fontSize:'24dp',
+        fontWeight : 'bold'
+    }
+},

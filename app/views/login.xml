@@ -1,0 +1,15 @@
+<Alloy>
+	<Window id="index" class="loginContainer" >
+		<ScrollView>
+			<!-- main content for the screen goes here -->
+			<View id='homeView'>
+				<Label id='welcomeText'></Label>
+				<View id="hvButtonContainer" >
+					<Button id="showCreateAccountBtn" title="Create Account"/>
+					<Button id="showLoginBtn" title="Login"/>
+					<Button id="showLoginFBBtn" title="Facebook Connect" />
+				</View>
+			</View>
+		</ScrollView>
+	</Window>
+</Alloy>
