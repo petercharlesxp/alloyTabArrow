@@ -5,7 +5,7 @@
 var parameters = arguments[0] || {};
 var currentPhoto = parameters.photo || {};
 var parentController = parameters.parentController || {};
-Ti.API.info("currentPhoto id: " + currentPhoto.id);
+//Ti.API.info("currentPhoto id: " + currentPhoto.id);
 var comments = Alloy.Collections.instance("comment");
 
 function loadComments(_photo_id) {
@@ -21,7 +21,8 @@ function loadComments(_photo_id) {
 		data : params,
 		success : function(model, response) {
 			comments.each(function(comment) {
-				Ti.API.info("comment in loadComents: " + JSON.stringify(comment)); //
+				Ti.API.info("comment in loadComents: " + JSON.stringify(comment));
+				//
 				var commentRow = Alloy.createController("commentRow", comment);
 				rows.push(commentRow.getView());
 			});
@@ -73,6 +74,9 @@ function doOpen() {
 
 
 OS_IOS && $.newCommentButton.addEventListener("click", handleNewCommentButtonClicked);
+$.commentTable.addEventListener("delete", handleDeleteRow);
+$.commentTable.addEventListener("longpress", handleDeleteRow);
+$.commentTable.editable = true;
 
 function handleNewCommentButtonClicked(_event) {
 	// FILLED OUT LATER IN CHAPTER
@@ -101,31 +105,80 @@ function inputCallback(_event) {
 }
 
 function addComment(_content) {
-    var comment = Alloy.createModel('Comment');
-    var params = {
-        photo_id : currentPhoto.id,
-        content : _content,
-        allow_duplicate : 1
-    };
+	var comment = Alloy.createModel('Comment');
+	var params = {
+		photo_id : currentPhoto.id,
+		content : _content,
+		allow_duplicate : 1
+	};
 
-    comment.save(params, {
-        success : function(_model, _response) {
-            Ti.API.info('success: ' + _model.toJSON());
-            Ti.API.info("_model: " + JSON.stringify(_model));
-            var row = Alloy.createController("commentRow", _model);
+	comment.save(params, {
+		success : function(_model, _response) {
+			Ti.API.info('success: ' + _model.toJSON());
+			Ti.API.info("_model: " + JSON.stringify(_model));
+			var row = Alloy.createController("commentRow", _model);
 
-            // add the controller view, which is a row to the table
-            if ($.commentTable.getData().length === 0) {
-                $.commentTable.setData([]);
-                $.commentTable.appendRow(row.getView(), true);
-            } else {
-                $.commentTable.insertRowBefore(0,row.getView(),
-                                                             true);
-            }
-        },
-        error : function(e) {
-            Ti.API.error('error: ' + e.message);
-            alert('Error saving new comment ' + e.message);
-        }
-    });
+			// add the controller view, which is a row to the table
+			if ($.commentTable.getData().length === 0) {
+				$.commentTable.setData([]);
+				$.commentTable.appendRow(row.getView(), true);
+			} else {
+				$.commentTable.insertRowBefore(0, row.getView(), true);
+			}
+		},
+		error : function(e) {
+			Ti.API.error('error: ' + e.message);
+			alert('Error saving new comment ' + e.message);
+		}
+	});
+}
+
+function handleDeleteRow(_event) {
+	//var collection = Alloy.Collections.instance("Comment");
+	var collection = Alloy.Collections.instance("comment");
+	Ti.API.info("collection in comment.js: " + JSON.stringify(collection));
+	var model = collection.get(_event.row.comment_id);
+	Ti.API.info("_event.row.comment_id in comment.js: " + JSON.stringify(_event.row.comment_id));
+	Ti.API.info("model in comment.js: " + JSON.stringify(model));
+
+	if (!model) {
+		alert("Could not find selected comment");
+		return;
+	} else {
+
+		if (OS_ANDROID) {
+			var optionAlert = Titanium.UI.createAlertDialog({
+				title : 'Alert',
+				message : 'Are You Sure You Want to Delete the Comment',
+				buttonNames : ['Yes', 'No']
+			});
+
+			optionAlert.addEventListener('click', function(e) {
+				if (e.index == 0) {
+					deleteComment(model);
+				}
+			});
+			optionAlert.show();
+		} else {
+			deleteComment(model);
+		}
+	}
+}
+
+function deleteComment(_comment) {
+	Ti.API.info("_comment in comment.js: " + JSON.stringify(_comment));
+	_comment.destroy({
+		data : {
+			photo_id : currentPhoto.id, // comment on
+			id : _comment.id // id of the comment object
+		},
+		success : function(_model, _response) {
+			loadComments(null);
+		},
+		error : function(_e) {
+			Ti.API.error('error: ' + _e.message);
+			alert("Error deleting comment");
+			loadComments(null);
+		}
+	});
 }

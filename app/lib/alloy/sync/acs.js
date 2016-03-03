@@ -137,9 +137,11 @@ function processACSComments(model, method, opts) {
 
 	case "read":
 		Cloud.Reviews.query((opts.data || {}), function(e) {
-			Ti.API.info("opts.data: " + JSON.stringify(opts.data || {}));//
+			Ti.API.info("opts.data: " + JSON.stringify(opts.data || {}));
+			//
 			if (e.success) {
-				Ti.API.info("e: " + JSON.stringify(e));//
+				Ti.API.info("e: " + JSON.stringify(e));
+				//
 				model.meta = e.meta;
 				if (e.reviews.length === 1) {
 					opts.success && opts.success(e.reviews[0]);
@@ -149,20 +151,41 @@ function processACSComments(model, method, opts) {
 				} else {
 					opts.success && opts.success(e.reviews);
 					//opts.success(e.reviews); //
-					Ti.API.info("opts.success,e.reviews.length !== 1: " + JSON.stringify(opts.success));//
-					Ti.API.info("opts.success,e.reviews.length !== 1: " + JSON.stringify(opts.success(e.reviews)));//
+					Ti.API.info("opts.success,e.reviews.length !== 1: " + JSON.stringify(opts.success));
+					//
+					Ti.API.info("opts.success,e.reviews.length !== 1: " + JSON.stringify(opts.success(e.reviews)));
+					//
 				}
-				Ti.API.info("Reviews: " + JSON.stringify(e));//
+				Ti.API.info("Reviews: " + JSON.stringify(e));
+				//
 				model.trigger("fetch");
 				return;
 			} else {
 				Ti.API.error("Reviews.query " + e.message);
-				opts.error && opts.error(e.message || e);				
+				opts.error && opts.error(e.message || e);
 			}
 		});
 		break;
 	case "update":
 	case "delete":
+		var params = {};
+
+		// look for the review id in opts or on model
+		params.review_id = model.id || (opts.data && opts.data.id);
+
+		// get the id of the associated photo
+		params.photo_id = opts.data && opts.data.photo_id;
+
+		Cloud.Reviews.remove(params, function(e) {
+			if (e.success) {
+				model.meta = e.meta;
+				opts.success && opts.success(model.attributes);
+				model.trigger("fetch");
+				return;
+			}
+			Ti.API.error(e);
+			opts.error && opts.error(e.error && e.message || e);
+		});
 		break;
 
 	}
