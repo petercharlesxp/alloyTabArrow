@@ -94,25 +94,7 @@ function processACSPhotos(model, method, options) {
 	case "update":
 	case "delete":
 		// Not currently implemented, let the user know
-		//alert("Not Implemented Yet");
-		var params = {};
-
-		// look for the review id in opts or on model
-		params.review_id = model.id || (opts.data && opts.data.id);
-
-		// get the id of the associated photo
-		params.photo_id = opts.data && opts.data.photo_id;
-
-		Cloud.Reviews.remove(params, function(e) {
-			if (e.success) {
-				model.meta = e.meta;
-				opts.success && opts.success(model.attributes);
-				model.trigger("fetch");
-				return;
-			}
-			Ti.API.error(e);
-			opts.error && opts.error(e.error && e.message || e);
-		});
+		alert("Not Implemented Yet");
 		break;
 	}
 }

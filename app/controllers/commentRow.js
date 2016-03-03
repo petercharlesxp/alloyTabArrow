@@ -2,7 +2,7 @@
 //var args = $.args;
 
 var model = arguments[0] || {};
-Ti.API.info("model in commentRow.js: " + JSON.stringify(model));
+//Ti.API.info("model in commentRow.js: " + JSON.stringify(model));
 //var user = model.attributes.user;
 //Ti.API.info("model.attributes.user_id in commentRow.js: " + JSON.stringify(model.attributes.user_id));
 var userid = model.attributes.user_id;

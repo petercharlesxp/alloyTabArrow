@@ -8,6 +8,11 @@ var parentController = parameters.parentController || {};
 //Ti.API.info("currentPhoto id: " + currentPhoto.id);
 var comments = Alloy.Collections.instance("comment");
 
+OS_IOS && $.newCommentButton.addEventListener("click", handleNewCommentButtonClicked);
+$.commentTable.addEventListener("delete", handleDeleteRow);
+$.commentTable.addEventListener("longpress", handleDeleteRow);
+$.commentTable.editable = true;
+
 function loadComments(_photo_id) {
 	var params = {
 		photo_id : currentPhoto.id,
@@ -20,6 +25,7 @@ function loadComments(_photo_id) {
 	comments.fetch({
 		data : params,
 		success : function(model, response) {
+			Ti.API.info("comments in loadComments: " + JSON.stringify(comments));
 			comments.each(function(comment) {
 				Ti.API.info("comment in loadComents: " + JSON.stringify(comment));
 				//
@@ -27,7 +33,9 @@ function loadComments(_photo_id) {
 				rows.push(commentRow.getView());
 			});
 			// set the table rows
+			Ti.API.info("rows in loadComments: " + JSON.stringify(rows));
 			$.commentTable.data = rows;
+			rows = []; // fixed bug for double rows 
 			Ti.API.info(JSON.stringify(params));
 		},
 		error : function(error) {
@@ -37,9 +45,6 @@ function loadComments(_photo_id) {
 	});
 }
 
-$.initialize = function() {
-	loadComments();
-};
 
 function doOpen() {
 	if (OS_ANDROID) {
@@ -72,11 +77,6 @@ function doOpen() {
 	}
 }
 
-
-OS_IOS && $.newCommentButton.addEventListener("click", handleNewCommentButtonClicked);
-$.commentTable.addEventListener("delete", handleDeleteRow);
-$.commentTable.addEventListener("longpress", handleDeleteRow);
-$.commentTable.editable = true;
 
 function handleNewCommentButtonClicked(_event) {
 	// FILLED OUT LATER IN CHAPTER
@@ -182,3 +182,7 @@ function deleteComment(_comment) {
 		}
 	});
 }
+
+$.initialize = function() {
+	loadComments();
+};
