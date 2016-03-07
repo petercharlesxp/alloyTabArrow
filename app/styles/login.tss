@@ -49,6 +49,12 @@
     borderColor :'orange',
     borderWidth :0
 },
+'#email' : {
+	hintText : 'email'
+},
+'#password' : {
+	hintText : 'password'
+},
 // General Styles
 '.tfWrapper': {
    top: '6dp',

@@ -121,15 +121,14 @@ $.userNotLoggedInAction = function() {
 
 var user = Alloy.createModel('User');
 
+/*
 if (user.authenticated() === true) {
     $.userLoggedInAction();
 } else {
     $.userNotLoggedInAction();
-}if (user.authenticated() === true) {
-    $.userLoggedInAction();
-} else {
-    $.userNotLoggedInAction();
 }
+*/
+$.userNotLoggedInAction();
 
 Alloy.Globals.openCurrentTabWindow = function(_window) {
 	$.tabGroup.activeTab.open(_window);
