@@ -13,6 +13,7 @@
     <analytics>true</analytics>
     <guid>c64b109c-526f-4bf0-9999-450723d9d95a</guid>
     <property name="ti.ui.defaultunit" type="string">dp</property>
+    <property name="ti.facebook.appid">ADD-YOUR-FACEBOOK-APPID-HERE</property>
     <ios>
         <enable-launch-screen-storyboard>true</enable-launch-screen-storyboard>
         <plist>
