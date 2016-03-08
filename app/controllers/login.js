@@ -144,7 +144,7 @@ function doFacebookLoginAction(_options) {
 		FB.addEventListener("login", faceBookLoginEventHandler);
 
 		// attempt to authorize user
-		FB.authorize();
+		FB.authorize(); // FB failed at this line
 
 	} else {
 		var user = Alloy.createModel('User');
