@@ -172,10 +172,10 @@ function loadPhotos() {
 				rows.push(photoRow.getView());
 			});
 			$.feedTable.data = rows;
-			Ti.API.info(JSON.stringify($.feedTable.data));
+			//Ti.API.info(JSON.stringify($.feedTable.data));
 		},
 		error : function(error) {
-			alert('Error loading Feed ' + e.message);
+			alert('Error loading Feed ' + error.message);
 			Ti.API.error(JSON.stringify(error));
 		}
 	});

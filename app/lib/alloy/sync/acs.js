@@ -86,7 +86,7 @@ function processACSPhotos(model, method, options) {
 				model.trigger("fetch");
 				return;
 			} else {
-				Ti.API.error("Cloud.Photos.query " + e.message);
+				Ti.API.error("Cloud.Photos.query error in acs.js " + e.message);
 				options.error(e.error && e.message || e);
 			}
 		});

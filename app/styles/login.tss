@@ -53,6 +53,7 @@
 	hintText : 'email'
 },
 '#password' : {
+	passwordMask: true,
 	hintText : 'password'
 },
 // General Styles
