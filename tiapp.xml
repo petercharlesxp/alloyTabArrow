@@ -13,7 +13,7 @@
     <analytics>true</analytics>
     <guid>c64b109c-526f-4bf0-9999-450723d9d95a</guid>
     <property name="ti.ui.defaultunit" type="string">dp</property>
-    <property name="ti.facebook.appid">ADD-YOUR-FACEBOOK-APPID-HERE</property>
+    <property name="ti.facebook.appid">c64b109c-526f-4bf0-9999-450723d9d95a</property>
     <ios>
         <enable-launch-screen-storyboard>true</enable-launch-screen-storyboard>
         <plist>
@@ -42,7 +42,10 @@
     </ios>
 	<android xmlns:android="http://schemas.android.com/apk/res/android">
 	    <manifest>
-	        <application android:theme="@style/Theme.AppCompat.Light"/>
+	        <application> <!-- android:theme="@style/Theme.AppCompat.Light"> -->
+	            <activity android:label="@string/app_name" android:name="com.facebook.LoginActivity" android:theme="@android:style/Theme.Translucent.NoTitleBar"/>
+                <meta-data android:name="com.facebook.sdk.ApplicationId" android:value="@string/facebook_app_id"/>
+            </application>
 	    </manifest>
 	</android>
     <mobileweb>
@@ -55,6 +58,8 @@
     </mobileweb>
     <modules>
         <module platform="commonjs">ti.cloud</module>
+        <module platform="android">facebook</module>
+        <module platform="iphone">facebook</module>
     </modules>
     <deployment-targets>
         <target device="iphone">false</target>

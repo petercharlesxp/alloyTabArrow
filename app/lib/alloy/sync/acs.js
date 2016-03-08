@@ -172,3 +172,23 @@ function processACSComments(model, method, opts) {
 
 	}
 }
+
+function processACSUsers(model, method, options) {
+  switch (method) {
+    case "update":
+      var params = model.toJSON();
+      Cloud.Users.update(params, function(e) {
+        if (e.success) {
+          model.meta = e.meta;
+          options.success && options.success(e.users[0]);
+          model.trigger("fetch");
+        } else {
+          Ti.API.error("Cloud.Users.update " + e.message);
+          options.error && 
+                  options.error(e.error && e.message || e);
+        }
+      });
+      break;
+
+  }
+}
