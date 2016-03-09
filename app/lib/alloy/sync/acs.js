@@ -42,6 +42,8 @@ function Sync(method, model, options) {
 		processACSUsers(model, method, options);
 	} else if (object_name === "reviews") {
 		processACSComments(model, method, options);
+	} else if (object_name === "friends") {
+		processACSFriends(model, method, options);
 	}
 }
 
@@ -174,21 +176,123 @@ function processACSComments(model, method, opts) {
 }
 
 function processACSUsers(model, method, options) {
-  switch (method) {
-    case "update":
-      var params = model.toJSON();
-      Cloud.Users.update(params, function(e) {
-        if (e.success) {
-          model.meta = e.meta;
-          options.success && options.success(e.users[0]);
-          model.trigger("fetch");
-        } else {
-          Ti.API.error("Cloud.Users.update " + e.message);
-          options.error && 
-                  options.error(e.error && e.message || e);
-        }
-      });
-      break;
+	switch (method) {
+	case "update":
+		var params = model.toJSON();
+		Cloud.Users.update(params, function(e) {
+			if (e.success) {
+				model.meta = e.meta;
+				options.success && options.success(e.users[0]);
+				model.trigger("fetch");
+			} else {
+				Ti.API.error("Cloud.Users.update " + e.message);
+				options.error && options.error(e.error && e.message || e);
+			}
+		});
+		break;
 
-  }
+	case "read":
+		options.data = options.data || {};
+		model.id && (options.data.user_id = model.id);
+
+		var readMethod = model.id ? Cloud.Users.show : Cloud.Users.query;
+
+		readMethod((options.data || {}), function(e) {
+			if (e.success) {
+				model.meta = e.meta;
+				if (e.users.length === 1) {
+					options.success(e.users[0]);
+				} else {
+					options.success(e.users);
+				}
+				model.trigger("fetch");
+				return;
+			} else {
+				Ti.API.error("Cloud.Users.query " + e.message);
+				;
+				options.error(e.error && e.message || e);
+			}
+		});
+
+		break;
+	}
+}
+
+function processACSFriends(model, method, opts) {
+	switch (method) {
+	case "create" :
+		var params = model.toJSON();
+
+		Cloud.Friends.add(params, function(e) {
+			if (e.success) {
+				model.meta = e.meta;
+				opts.success && opts.success({});
+				model.trigger("fetch");
+				return;
+			}
+			Ti.API.error(e);
+			opts.error && opts.error(e.error && e.message || e);
+			model.trigger("error");
+		});
+		break;
+	case "read" :
+		opts.data = opts.data || {};
+		model.id && (opts.data.user_id = model.id);
+
+		/*
+		 {
+		 "meta": {
+		 "code": 410,
+		 "status": "fail",
+		 "message": "search.json has been deprecated. Please use $text query"
+		 }
+		 }
+		 Cloud.Friends.search((opts.data || {}), function(e) {
+		 if (e.success) {
+		 model.meta = e.meta;
+		 opts.success(e.users);
+		 model.trigger("fetch");
+		 return;
+		 } else {
+		 Ti.API.error("Cloud.Friends.query " + e.message);
+		 opts.error(e.error && e.message || e);
+		 model.trigger("error");
+		 }
+		 });
+		 */
+		Cloud.sendRequest({
+			url : "friends/query.json",
+			method : "GET"
+		}, function(e) {
+			if (e.success) {
+				//var results = e.users
+				// Process the results
+				model.meta = e.meta;
+				opts.success(e.users);
+				model.trigger("fetch");
+				Ti.API.info("model in friends query in acs.js: " + JSON.stringify(model));
+				return;
+			} else {
+				alert('Error:\n' + ((e.error && e.message) || JSON.stringify(e)));
+			}
+		});
+		break;
+	case "delete" :
+		Cloud.Friends.remove({
+			user_ids : opts.data.user_ids.join(",")
+		}, function(e) {
+			Ti.API.debug(JSON.stringify(e));
+			if (e.success) {
+				model.meta = e.meta;
+				opts.success && opts.success({});
+				model.trigger("fetch");
+				return;
+			}
+			Ti.API.error("Cloud.Friends.remove: " + e);
+			opts.error && opts.error(e.error && e.message || e);
+			model.trigger("error");
+		});
+		break;
+	}
+
 }

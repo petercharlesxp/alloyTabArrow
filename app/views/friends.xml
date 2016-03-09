@@ -1,4 +1,5 @@
-<Alloy>
+<Alloy>	
+	<Collection src="user" instance="true" id="friendUserCollection" />
 	<Tab title="Friends">
 		<Window title="Friends" id="friendsWindow">
 			<!-- used to toggle between different types of users -->
@@ -21,7 +22,7 @@
 			</View>
 			<ListView id="listView">
 				<Templates>
-					<ItemTemplate name="fullItem" height="40dp" width="Ti.UI.FILL">
+					<ItemTemplate name="fullItem" height="50dp" width="Ti.UI.FILL">
 						<View id="userView">
 							<ImageView bindId="userAvatar" id="userAvatar"/>
 							<Label bindId="userName" id="userName"/>
@@ -29,7 +30,7 @@
 						<Button title="Follow" class="actionBtn"
 						onClick="followBtnClicked"/>
 					</ItemTemplate>
-					<ItemTemplate name="friends" height="40dp" width="Ti.UI.FILL">
+					<ItemTemplate name="friends" height="50dp" width="Ti.UI.FILL">
 						<View id="userView">
 							<ImageView bindId="userAvatar" id="userAvatar"/>
 							<Label bindId="userName" id="userName"/>
@@ -38,8 +39,13 @@
 						onClick="followingBtnClicked"/>
 					</ItemTemplate>
 				</Templates>
-				<ListSection>
-					<ListItem />
+				<ListSection id="section" dataCollection="$.friendUserCollection"   
+				                          dataTransform="doTransform"
+				                          dataFilter="doFilter">
+				    <ListItem template="{template}" 
+				                 userName:text="{title}"
+				                 userAvatar:image="{image}" 
+				                 modelId="{modelId}"/>
 				</ListSection>
 			</ListView>
 		</Window>
