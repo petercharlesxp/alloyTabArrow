@@ -205,6 +205,32 @@ function processACSUsers(model, method, options) {
 				} else {
 					options.success(e.users);
 				}
+				/*
+				if (model.id) {
+					Cloud.Photos.show({
+						photo_id : model.photo_id
+					}, function(e) {
+						if (e.success) {
+							var photo = e.photos[0];
+							model.photo = photo;
+						}
+					});
+				} else {
+					model.each(function(item) {
+						Cloud.Photos.show({
+							photo_id : item.get("photo_id")
+						}, function(e) {
+							if (e.success) {
+								var photo = e.photos[0];
+								item.photo = photo;
+							}
+						});
+						Ti.API.info("user model read in acs.js: " + JSON.stringify(item.get("photo_id")));
+						Ti.API.info("user model read set photo in acs.js: " + JSON.stringify(item.photo));
+					});
+				}
+				Ti.API.info("user model read in acs.js: " + JSON.stringify(model));
+				*/
 				model.trigger("fetch");
 				return;
 			} else {
@@ -268,9 +294,19 @@ function processACSFriends(model, method, opts) {
 				//var results = e.users
 				// Process the results
 				model.meta = e.meta;
+				/*
+				 Cloud.Photos.show({
+				 photo_id : model.photo_id
+				 }, function(e) {
+				 if (e.success) {
+				 var photo = e.photos[0];
+				 model.photo = photo;
+				 }
+				 });
+				 */
 				opts.success(e.users);
-				model.trigger("fetch");
 				Ti.API.info("model in friends query in acs.js: " + JSON.stringify(model));
+				model.trigger("fetch");
 				return;
 			} else {
 				alert('Error:\n' + ((e.error && e.message) || JSON.stringify(e)));

@@ -1,6 +1,5 @@
 exports.definition = {
 	config : {
-
 		adapter : {
 			type : "acs",
 			collection_name : "users"
@@ -16,6 +15,7 @@ exports.definition = {
 			 * @param {Object} _password
 			 * @param {Object} _callback
 			 */
+			photo : null,
 			login : function(_login, _password, _callback) {
 				var self = this;
 				this.config.Cloud.Users.login({
