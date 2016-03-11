@@ -153,30 +153,46 @@ function loadPhotos() {
 	// creates or gets the global instance of photo collection
 	var photos = Alloy.Collections.photo || Alloy.Collections.instance("Photo");
 
-	// be sure we ignore profile photos;
-	var where = {
-		title : {
-			"$exists" : true
-		}
-	};
-
-	photos.fetch({
-		data : {
-			order : '-created_at',
-			where : where
-		},
-		success : function(model, response) {
-			photos.each(function(photo) {
-				var photoRow = Alloy.createController("feedRow", photo);
-				//Ti.API.info("feedRow: " + JSON.stringify(photo));
-				rows.push(photoRow.getView());
-			});
-			$.feedTable.data = rows;
-			//Ti.API.info(JSON.stringify($.feedTable.data));
-		},
-		error : function(error) {
-			alert('Error loading Feed ' + error.message);
-			Ti.API.error(JSON.stringify(error));
-		}
+	Ti.API.info("Alloy.Globals.currentUser in feed.js: " + JSON.stringify(Alloy.Globals.currentUser));
+	/*
+	options = {};
+	photos = photos.findMyPhotosAndWhoIFollow(Alloy.Globals.currentUser, options);
+	Ti.API.info("Is photos model in feed.js: " + ( photos instanceof Backbone.Collection));
+	Ti.API.info("photos in feed.js: " + JSON.stringify(photos));
+	photos.each(function(photo) {
+		var photoRow = Alloy.createController("feedRow", photo);
+		//Ti.API.info("feedRow: " + JSON.stringify(photo));
+		rows.push(photoRow.getView());
 	});
+	$.feedTable.data = rows;
+	*/
+
+	
+	 // be sure we ignore profile photos;
+	 var where = {
+	 title : {
+	 "$exists" : true
+	 }
+	 };
+
+	 photos.fetch({
+	 data : {
+	 order : '-created_at',
+	 where : where
+	 },
+	 success : function(model, response) {
+	 photos.each(function(photo) {
+	 var photoRow = Alloy.createController("feedRow", photo);
+	 //Ti.API.info("feedRow: " + JSON.stringify(photo));
+	 rows.push(photoRow.getView());
+	 });
+	 $.feedTable.data = rows;
+	 //Ti.API.info(JSON.stringify($.feedTable.data));
+	 },
+	 error : function(error) {
+	 alert('Error loading Feed ' + error.message);
+	 Ti.API.error(JSON.stringify(error));
+	 }
+	 });
+	 
 }

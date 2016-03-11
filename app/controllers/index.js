@@ -130,6 +130,7 @@ if (user.authenticated() === true) {
 }
 
 //$.userNotLoggedInAction();
+Alloy.Globals.currentUser = user; //
 
 Alloy.Globals.openCurrentTabWindow = function(_window) {
 	$.tabGroup.activeTab.open(_window);

@@ -68,15 +68,39 @@ function followBtnClicked(_event) {
 }
 
 function getModelFromSelectedRow(_event) {
-    var item = _event.section.items[_event.itemIndex];
-    var selectedUserId = item.properties.modelId;
-    return {
-        model : $.friendUserCollection.get(selectedUserId),
-        displayName : item.userName.text,
-    };
+	var item = _event.section.items[_event.itemIndex];
+	var selectedUserId = item.properties.modelId;
+	return {
+		model : $.friendUserCollection.get(selectedUserId),
+		displayName : item.userName.text,
+	};
 }
 
 function followingBtnClicked(_event) {
+	Alloy.Globals.PW.showIndicator("Updating User");
+
+	var currentUser = Alloy.Globals.currentUser;
+	var selUser = getModelFromSelectedRow(_event);
+
+	currentUser.unFollowUser(selUser.model.id, function(_resp) {
+		if (_resp.success) {
+			// update the lists
+			updateFollowersFriendsLists(function() {
+
+				// update the UI to reflect the change
+				loadFriends(function() {
+					Alloy.Globals.PW.hideIndicator();
+					alert("You're no longer following " + selUser.displayName);
+				});
+			});
+
+		} else {
+			alert("Error unfollowing " + selUser.displayName);
+		}
+		Alloy.Globals.PW.hideIndicator();
+
+	});
+	_event.cancelBubble = true;
 }
 
 function initialize() {
