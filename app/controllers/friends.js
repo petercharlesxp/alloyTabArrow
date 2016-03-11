@@ -40,6 +40,40 @@ function filterClicked(_event) {
 }
 
 function followBtnClicked(_event) {
+	Alloy.Globals.PW.showIndicator("Updating User");
+
+	var currentUser = Alloy.Globals.currentUser;
+	var selUser = getModelFromSelectedRow(_event);
+
+	currentUser.followUser(selUser.model.id, function(_resp) {
+		if (_resp.success) {
+
+			// update the lists IF it was successful
+			updateFollowersFriendsLists(function() {
+
+				// update the UI to reflect the change
+				getAllUsersExceptFriends(function() {
+					Alloy.Globals.PW.hideIndicator();
+					alert("You are now following " + selUser.displayName);
+				});
+			});
+		} else {
+			alert("Error trying to follow " + selUser.displayName);
+		}
+		Alloy.Globals.PW.hideIndicator();
+
+	});
+
+	_event.cancelBubble = true;
+}
+
+function getModelFromSelectedRow(_event) {
+    var item = _event.section.items[_event.itemIndex];
+    var selectedUserId = item.properties.modelId;
+    return {
+        model : $.friendUserCollection.get(selectedUserId),
+        displayName : item.userName.text,
+    };
 }
 
 function followingBtnClicked(_event) {
@@ -135,35 +169,33 @@ function doFilter(_collection) {
 
 function doTransform(model) {
 
-    var displayName, image, user = model.toJSON();
+	var displayName,
+	    image,
+	    user = model.toJSON();
 
-    // get the photo
-    if (user.photo && user.photo.urls) {
-        image = user.photo.urls.square_75 ||
-                user.photo.urls.thumb_100 ||
-              user.photo.urls.original ||
-              "missing.gif";
-    } else {
-        image = "missing.gif";
-    }
+	// get the photo
+	if (user.photo && user.photo.urls) {
+		image = user.photo.urls.square_75 || user.photo.urls.thumb_100 || user.photo.urls.original || "missing.gif";
+	} else {
+		image = "missing.gif";
+	}
 
-    // get the display name
-    if (user.first_name || user.last_name) {
-        displayName = 
-            (user.first_name || "") + " " + (user.last_name || "");
-    } else {
-        displayName = user.email;
-    }
+	// get the display name
+	if (user.first_name || user.last_name) {
+		displayName = (user.first_name || "") + " " + (user.last_name || "");
+	} else {
+		displayName = user.email;
+	}
 
-    // return the object
-    var modelParams = {
-        title : displayName,
-        image : image,
-        modelId : user.id,
-        template : $.collectionType
-    };
+	// return the object
+	var modelParams = {
+		title : displayName,
+		image : image,
+		modelId : user.id,
+		template : $.collectionType
+	};
 
-    return modelParams;
+	return modelParams;
 
 	/*
 	 Cloud.Photos.show({
